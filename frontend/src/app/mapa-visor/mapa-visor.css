@@ -1,0 +1,5 @@
+#map {
+  height: 100vh; /* Ocupa todo el alto de la pantalla */
+  width: 100%;   /* Ocupa todo el ancho */
+  display: block;
+}
