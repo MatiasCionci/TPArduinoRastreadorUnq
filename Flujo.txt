@@ -1,0 +1,89 @@
+🧭 Escenario Inicial: El Servidor en Memoria
+Cuando ejecutás node server.js en tu VS Code, el servidor se levanta y 
+reserva un espacio en la memoria RAM de tu compu para dos variables globales:
+
+latitudLocal (Arranca en -34.7242)
+
+longitudLocal (Arranca en -58.2608)
+
+El servidor se queda "escuchando" en el puerto 5000 a la espera de que alguien le pegue a sus rutas.
+
+🔄 El Flujo Paso a Paso
+Paso 1: El Arduino envía los datos (Entrada de Datos)
+El Arduino (o el simulador del navegador) captura la ubicación real mediante un módulo GPS.
+
+El código de Arduino se conecta al Wi-Fi de tu casa y hace una petición HTTP GET a la ruta 
+de actualización del backend.
+
+Viaja la URL con los datos en los Query Params:
+http://192.168.0.33:5000/api/actualizar?lat=-34.7242&lng=-58.2608
+
+El archivo server.js recibe la petición en la ruta /api/actualizar.
+
+El servidor ejecuta parseFloat(lat) y parseFloat(lng), agarrando esos textos y
+ transformándolos en números, y pisa las variables locales latitudLocal y 
+ longitudLocal con los nuevos valores reales del GPS.
+
+El backend le responde al Arduino con un JSON: {"status": "OK"} para avisarle 
+que la info ya se guardó en la memoria.
+
+Paso 2: El Servicio de Angular pide los datos (El Intermediario del Frente)
+Mientras tanto, en el navegador (de tu compu o celular), la aplicación de Angular
+ ya está corriendo.
+
+El componente visual no habla directamente con la red por buenas prácticas de 
+arquitectura; para eso usa la clase Mapa (tu servicio en mapa.service.ts).
+
+Adentro de la clase Mapa, el método getUbicacion() usa la herramienta HttpClient
+ de Angular para hacer un HTTP GET a la ruta de lectura del
+  servidor: http://localhost:5000/api/ubicacion.
+
+Este método devuelve un Observable. En Angular, un observable es
+ como una canilla abierta: se queda esperando a que los datos viajen
+  desde el servidor y fluyan hacia quien los necesite.
+
+Paso 3: El Visor del Mapa reacciona y dibuja (La Vista de Usuario)
+Acá entra en juego la clase MapaVisor (mapa-visor.ts), que es la que 
+el usuario ve en pantalla.
+
+Ciclo de Vida (ngOnInit): Apenas el componente se renderiza en la pantalla,
+ se ejecuta el método initMap(). Este método agarra el <div id="map"></div> 
+ de tu archivo HTML y monta el mapa interactivo de Leaflet, clavando un marcador 
+ (L.marker) en las coordenadas iniciales.
+
+El Temporizador (setInterval): En ese mismo instante, 
+se activa un reloj interno que cada 3 segundos exactos ejecuta la función
+ getArduinoLocation().
+
+La Suscripción: Dentro de esa función, MapaVisor se suscribe al observable
+ del servicio Mapa:
+
+TypeScript
+this.mapaService.getUbicacion().subscribe({ ... })
+La Respuesta del Backend: El backend (server.js) recibe la consulta en
+ /api/ubicacion, mira rápidamente qué valores tienen guardados las variables
+  latitudLocal y longitudLocal en ese milisegundo, y se los escupe a Angular
+   en formato JSON: {"lat": -34.7242, "lng": -58.2608}.
+
+Actualización de Leaflet: Cuando el JSON llega al bloque .subscribe en el 
+frontend, la lógica de tu clase ejecuta dos métodos nativos de Leaflet:
+
+this.marker.setLatLng(nuevaPos): Agarra el pin azul y lo mueve suavemente por
+ la pantalla hacia las coordenadas nuevas.
+
+this.map.panTo(nuevaPos): Desplaza la cámara del mapa para dejar el pin perfectamente 
+centrado.
+
+📊 Resumen del ciclo continuo
+[ Arduino / GPS ] 
+       │  (HTTP GET con ?lat=X&lng=Y cada vez que se mueve)
+       ▼
+[ backend / server.js ] ──► (Guarda datos en variables locales)
+       ▲
+       │  (Petición HTTP GET cada 3 segundos)
+[ frontend / mapa.service.ts (Clase: Mapa) ]
+       ▲
+       │  (Envía el flujo de datos mediante el Observable)
+[ frontend / mapa-visor.ts (Clase: MapaVisor) ] ──► Mueve el pin en Leaflet (HTML)
+Cada 3 segundos la pantalla se entera si el Arduino cambió de posición, logrando el 
+efecto de rastreo en tiempo real sin necesidad de recargar la página web.
