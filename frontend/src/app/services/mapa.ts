@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class Mapa {
   // Acá le pegamos a la ruta de Node que armamos en el servidor
-  private apiUrl = 'http://localhost:5000/api/ubicacion';
+  private apiUrl = 'http://192.168.0.33:5000/api/ubicacion';
 
   constructor(private http: HttpClient) { }
 

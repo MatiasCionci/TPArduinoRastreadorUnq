@@ -1,0 +1,94 @@
+Primero probamos el código en el simulador wokwi.
+https://wokwi.com/projects/new/arduino-uno
+Empezamos tratando de incorporar una placa inalámbrica
+
+
+
+https://www.youtube.com/watch?v=h559d9WsWcU
+
+Modulo esp8266 Arduino uno
+tutorial paso a paso 
+
+https://naylampmechatronics.com/blog/56_usando-esp8266-con-el-ide-de-arduino.html
+______________________________________________
+Visual Studio Code
+Node versión 22.17.1
+Angular 10.9.2
+
+1.Instalar Angular Cli
+npm install -g @angular/cli
+
+2.-ng new frontend --routing --style=css
+(Esto creará una carpeta llamada frontend con toda la estructura de Angular).
+
+3.? Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)? (y/N)
+
+Apretar N
+
+1.Creá una carpeta llamada backend,y metete en ella
+mkdir backend
+cd backend
+
+2.Inicializá el proyecto de Node:
+npm init -y
+
+3.Instalá las dependencias iniciales para tu API (Express para las rutas y Cors para que Angular pueda consultar al backend sin bloqueos)
+npm install express cors
+
+4.volver a la raíz del proyecto
+cd ..
+
+1.En la carpeta de frontend
+
+npm install leaflet
+npm install --save-dev @types/leaflet
+
+2.Agregar los estilos del mapa:
+Abrí el archivo angular.json en la raíz de la carpeta frontend, buscá la sección de "styles" y agregá la CSS de Leaflet para que el mapa no se rompa:
+"styles": [
+  "src/styles.css",
+  "node_modules/leaflet/dist/leaflet.css"
+],
+
+
+1.Crear un servicio para conectar con Node:
+Generá un servicio para hacer los llamados HTTP:
+ng g s services/mapa
+
+ ng g s services/mapa                 
+                                                           
+Would you like to share pseudonymous usage data about this project with the Angular Team 
+at Google under Google's Privacy Policy at https://policies.google.com/privacy. For more
+details and how to change this setting, see https://angular.dev/cli/analytics.
+
+   (y/N)
+apretar N
+
+
+(Asegurate de proveer el provideHttpClient() en tu app.config.ts si estás usando las últimas versiones de Angular standalone).
+
+
+
+2.Montar el mapa en el componente principal (app.component.ts):
+Modificá tu componente para inicializar Leaflet y pedirle datos al backend periódicamente (usando un setInterval por ejemplo, para simular el tiempo real).
+
+
+--LEVANTAR Servidor,abrir a la red local desde angular
+ng serve --host 0.0.0.0 --port 4200
+
+Para ver el Mapa (Angular):
+👉 http://tuip:4200
+
+👉 http://tuip:5000/api/actualizar?lat=-34.7242&lng=-58.2608
+
+Averiguar su IP (ipconfig)
+Sí, tal cual dijiste. Él va a tener que abrir su consola, tirar ipconfig y buscar su Dirección IPv4 (por ejemplo, imaginemos que a él le da 192.168.1.50).
+
+cambiar En el Frontend (mapa.service.ts):
+private apiUrl = 'http://192.168.1.50:5000/api/ubicacion'; // <-- Su IP y el puerto de Node
+
+En el Backend (server.js):
+Al final del archivo, donde el servidor se queda escuchando, tiene que cambiar tu IP por la de él para que los carteles de la consola apunten bien (aunque el '0.0.0.0' hace que escuche igual, está bueno cambiarlo para no confundirse):
+
+JavaScript
+console.log(`- Red (para el Arduino): http://192.168.1.50:5000`); // <-- Su IP
