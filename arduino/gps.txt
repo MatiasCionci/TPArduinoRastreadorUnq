@@ -1,0 +1,17 @@
+Descargar Extensión Arduino
+
+gnd en gnd
+vcc eb 5v
+tx en 4
+rx en 3
+
+----
+Inconvenientes
+
+Corregir la alimentación: Pasaste de 3.3V (donde el GPS se reseteaba por falta de potencia) a un canal estable de 5V.
+
+Solucionar el cableado: Evitaste el conflicto de los pines 0 y 1 usando SoftwareSerial en los pines 3 y 4.
+
+Filtrar datos: Instalaste y programaste la librería TinyGPS++ para procesar las sentencias NMEA nativas del chip.
+
+Captar señal: Lograste el primer enlace (Cold Start) exponiendo correctamente la antena cerámicamente al cielo.

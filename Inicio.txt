@@ -85,10 +85,10 @@ Averiguar su IP (ipconfig)
 Sí, tal cual dijiste. Él va a tener que abrir su consola, tirar ipconfig y buscar su Dirección IPv4 (por ejemplo, imaginemos que a él le da 192.168.1.50).
 
 cambiar En el Frontend (mapa.service.ts):
-private apiUrl = 'http://192.168.1.50:5000/api/ubicacion'; // <-- Su IP y el puerto de Node
+private apiUrl = 'http://tuip:5000/api/ubicacion'; // <-- Su IP y el puerto de Node
 
 En el Backend (server.js):
 Al final del archivo, donde el servidor se queda escuchando, tiene que cambiar tu IP por la de él para que los carteles de la consola apunten bien (aunque el '0.0.0.0' hace que escuche igual, está bueno cambiarlo para no confundirse):
 
 JavaScript
-console.log(`- Red (para el Arduino): http://192.168.1.50:5000`); // <-- Su IP
+console.log(`- Red (para el Arduino): http://tuip:5000`); // <-- Su IP
