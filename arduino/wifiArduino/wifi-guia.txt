@@ -1,0 +1,13 @@
+TX:Con resistencia, conectada a pin 10.
+RX:Sin resistencia, conectado a pin 11.
+EN: Conectado a 5v
+3V3: Conectado a 5v
+GND: GND
+
+
+AT+CWMODE=1
+AT+CWJAP="WIFI-UNQ"
+
+WIFI CONNECTED
+WIFI GOT IP
+OK
